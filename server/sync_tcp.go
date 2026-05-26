@@ -30,6 +30,7 @@ func RunSyncTCPServer(){
 	
 	var con_clients int = 0
 
+  	// listening to the configured host:port
 	lsnr, err := net.Listen("tcp", config.Host+":"+strconv.Itoa(config.Port))
 
 	if err != nil{
@@ -37,17 +38,18 @@ func RunSyncTCPServer(){
 	}
 	
 	for{
+		// blocking call : waiting for the new client to connect
 		c, err := lsnr.Accept()
-
 		if err != nil{
 			panic(err)
 		}
 
+		// increment the number of concurrent clients
 		con_clients += 1
 		log.Println("Client connected with address:", c.RemoteAddr(), "Concurrent Clients", con_clients)
 
 		for{
-
+			// over the socket, continuously read the command and print it out
 			cmd, err := readCommand(c)
 
 			if err != nil{
